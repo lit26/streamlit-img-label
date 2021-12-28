@@ -40,9 +40,30 @@ def _recommended_box(img: Image):
     left, top = box[0], box[1]
     return {'left' : int(left), 'top' : int(top), 'width' : int(width), 'height' : int(height)}
 
+def _get_preview(img, rect):
+    resized_img = _resize_img(img)
+    resized_ratio_w = img.width / resized_img.width
+    resized_ratio_h = img.height / resized_img.height
+    rect["left"] = int(rect["left"] * resized_ratio_w)
+    rect["width"] = int(rect["width"] * resized_ratio_w)
+    rect["top"] = int(rect["top"] * resized_ratio_h)
+    rect["height"] = int(rect["height"] * resized_ratio_h)
+    left, top, width, height = tuple(
+        map(int, rect.values())
+    )
 
-def st_img_label(img: Image, box_color: str='blue',
-               return_type: str='image', box_algorithm=None,  key=None):
+    raw_image = np.asarray(img).astype("uint8")
+    prev_img = np.zeros(raw_image.shape, dtype="uint8")
+    prev_img[
+        top : top + height, left : left + width
+    ] = raw_image[
+        top : top + height, left : left + width
+    ]
+    prev_img = prev_img[top : top + height, left : left + width]
+    return Image.fromarray(prev_img)
+
+
+def st_img_label(img: Image, box_color: str='blue', box_algorithm=None,  key=None):
     """Create a new instance of "st_img_label".
 
     Parameters
@@ -53,17 +74,11 @@ def st_img_label(img: Image, box_color: str='blue',
         The color of the cropper's bounding box. Defaults to blue, can accept 
         other string colors recognized by fabric.js or hex colors in a format like
         '#ff003c'
-    aspect_ratio: tuple
-        Tuple representing the ideal aspect ratio: e.g. 1:1 aspect is (1,1) and 4:3 is (4,3)
     box_algorithm: function
         A function that can return a bounding box, the function should accept a PIL image
         and return a dictionary with keys: 'left', 'top', 'width', 'height'. Note that
         if you use a box_algorithm with an aspect_ratio, you will need to decide how to
         handle the aspect_ratio yourself
-    return_type: str
-        The return type that you would like. The default, 'image', returns the cropped
-        image, while 'box' returns a dictionary identifying the box by its
-        left and top coordinates as well as its width and height.
     key: str or None
         An optional key that uniquely identifies this component. If this is
         None, and the component's arguments are changed, the component will
@@ -74,11 +89,6 @@ def st_img_label(img: Image, box_color: str='blue',
     PIL.Image
     The cropped image in PIL.Image format
     """
-
-    # Ensure that the return type is in the list of supported return types
-    supported_types = ('image', 'box')
-    if return_type.lower() not in supported_types:
-        raise ValueError(f"{return_type} is not a supported value for return_type, try one of {supported_types}")
     # Load the image and resize to be no wider than the streamlit widget size 
     img = _resize_img(img)
 
@@ -116,13 +126,8 @@ def st_img_label(img: Image, box_color: str='blue',
         rect = component_value['coords']
     else:
         rect = box
-
-    # Return the value desired by the return_type
-    if return_type.lower() == 'image':
-        cropped_img = img.crop((rect['left'], rect['top'], rect['width'] + rect['left'], rect['height'] + rect['top']))
-        return cropped_img
-    elif return_type.lower() == 'box':
-        return rect
+    
+    return rect
 
 
 # Add some test code to play with the component while it's in development.
@@ -137,11 +142,10 @@ if not _RELEASE:
     if img_file:
         img = Image.open(img_file)
         # Get a cropped image from the frontend
-        cropped_img = st_img_label(img, box_color='#0000FF')
-        
-        # Manipulate cropped image at will
-        st.write("Preview")
-        _ = cropped_img.thumbnail((150,150))
-        st.image(cropped_img)
+        rect = st_img_label(img, box_color='red')
+
+        prev_img =_get_preview(img, rect)
+        prev_img.thumbnail((200,200))
+        st.image(prev_img)
 
     
