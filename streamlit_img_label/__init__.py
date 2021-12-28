@@ -30,44 +30,18 @@ def _resize_img(img: Image, max_height: int=700, max_width: int=700):
         img = img.resize((int(img.width * ratio), int(img.height * ratio)))
     return img
 
-def _recommended_box(img: Image, aspect_ratio: tuple=None):
+def _recommended_box(img: Image):
     # Find a recommended box for the image (could be replaced with image detection)
     box = (img.width * 0.2, img.height * 0.2, img.width * 0.8, img.height * 0.8)
     box = [int(i) for i in box]
     height = box[3] - box[1]
     width = box[2] - box[0]
 
-    # If an aspect_ratio is provided, then fix the aspect
-    if aspect_ratio:
-        ideal_aspect = aspect_ratio[0] / aspect_ratio[1]
-        height = (box[3] - box[1]) 
-        current_aspect = width / height
-        if current_aspect > ideal_aspect:
-            new_width = int(ideal_aspect * height)
-            offset = (width - new_width) // 2
-            resize = (offset, 0, -offset, 0)
-        else:
-            new_height = int(width / ideal_aspect)
-            offset = (height - new_height) // 2
-            resize = (0, offset, 0, -offset)
-        box = [box[i] + resize[i] for i in range(4)]
-        left = box[0]
-        top = box[1]
-        width = 0
-        iters = 0
-        while width < box[2] - left:
-            width += aspect_ratio[0]
-            iters += 1
-        height = iters * aspect_ratio[1]
-    else:
-        left = box[0]
-        top = box[1]
-        width = box[2] - box[0]
-        height = box[3] - box[1]
+    left, top = box[0], box[1]
     return {'left' : int(left), 'top' : int(top), 'width' : int(width), 'height' : int(height)}
 
 
-def st_img_label(img: Image, box_color: str='blue', aspect_ratio: tuple=None,
+def st_img_label(img: Image, box_color: str='blue',
                return_type: str='image', box_algorithm=None,  key=None):
     """Create a new instance of "st_img_label".
 
@@ -110,9 +84,9 @@ def st_img_label(img: Image, box_color: str='blue', aspect_ratio: tuple=None,
 
     # Find a default box
     if not box_algorithm:
-        box = _recommended_box(img, aspect_ratio=aspect_ratio)
+        box = _recommended_box(img)
     else:
-        box = box_algorithm(img, aspect_ratio=aspect_ratio)
+        box = box_algorithm(img)
     rectLeft = box['left']
     rectTop = box['top']
     rectWidth = box['width']
@@ -122,8 +96,6 @@ def st_img_label(img: Image, box_color: str='blue', aspect_ratio: tuple=None,
     canvasWidth = img.width
     canvasHeight = img.height
     lockAspect = False
-    if aspect_ratio:
-        lockAspect = True
 
     # Translates image to a list for passing to Javascript
     imageData = np.array(img.convert("RGBA")).flatten().tolist()
@@ -165,8 +137,7 @@ if not _RELEASE:
     if img_file:
         img = Image.open(img_file)
         # Get a cropped image from the frontend
-        cropped_img = st_img_label(img, box_color='#0000FF',
-                                 aspect_ratio=None)
+        cropped_img = st_img_label(img, box_color='#0000FF')
         
         # Manipulate cropped image at will
         st.write("Preview")
