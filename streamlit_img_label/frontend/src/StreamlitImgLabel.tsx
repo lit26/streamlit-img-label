@@ -98,6 +98,7 @@ const StreamlitImgLabel = (props: ComponentProps) => {
         hasRotatingPoint: false,
       })
     )
+    sendCoordinates()
   }
 
   const removeBoxHandler = () => {
