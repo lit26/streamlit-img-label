@@ -20,14 +20,14 @@ pip install -e .
 Install npm dependencies :
 
 ```
-cd streamlit_image_label/frontend
+cd streamlit_img_label/frontend
 npm install
 ```
 
 Run custom components web server :
 
 ```
-cd streamlit_image_label/frontend
+cd streamlit_img_label/frontend
 npm run start
 ```
 
