@@ -5,20 +5,26 @@ import {
   withStreamlitConnection,
 } from "streamlit-component-lib"
 import { fabric } from "fabric"
+import styles from "./StreamlitImgLabel.module.css"
 
-interface PythonArgs {
-  canvasWidth: number
-  canvasHeight: number
+interface RectProps {
   rectTop: number
   rectLeft: number
   rectWidth: number
   rectHeight: number
+}
+
+interface PythonArgs {
+  canvasWidth: number
+  canvasHeight: number
+  rects: RectProps[]
   boxColor: string
   imageData: Uint8ClampedArray
   lockAspect: boolean
 }
 
 const StreamlitImgLabel = (props: ComponentProps) => {
+  const [mode, setMode] = useState("light")
   const [canvas, setCanvas] = useState(new fabric.Canvas(""))
   const { canvasWidth, canvasHeight, imageData }: PythonArgs = props.args
   /*
@@ -49,50 +55,74 @@ const StreamlitImgLabel = (props: ComponentProps) => {
    * Initialize canvas on mount and add a rectangle
    */
   useEffect(() => {
-    const {
-      rectTop,
-      rectLeft,
-      rectWidth,
-      rectHeight,
-      boxColor,
-      lockAspect,
-    }: PythonArgs = props.args
-    const canvas = new fabric.Canvas("c", {
+    const { rects, boxColor, lockAspect }: PythonArgs = props.args
+    const canvasTmp = new fabric.Canvas("c", {
       enableRetinaScaling: false,
       backgroundImage: dataUri,
       uniScaleTransform: lockAspect,
     })
 
-    const rect = new fabric.Rect({
-      left: rectLeft,
-      top: rectTop,
-      fill: "",
-      width: rectWidth,
-      height: rectHeight,
-      objectCaching: true,
-      stroke: boxColor,
-      strokeWidth: 3,
-      hasRotatingPoint: false,
+    rects.forEach((rect) => {
+      const { rectTop, rectLeft, rectWidth, rectHeight } = rect
+      canvasTmp.add(
+        new fabric.Rect({
+          left: rectLeft,
+          top: rectTop,
+          fill: "",
+          width: rectWidth,
+          height: rectHeight,
+          objectCaching: true,
+          stroke: boxColor,
+          strokeWidth: 1,
+          hasRotatingPoint: false,
+        })
+      )
     })
-    canvas.add(rect)
 
-    setCanvas(canvas)
+    setCanvas(canvasTmp)
     Streamlit.setFrameHeight()
     // eslint-disable-next-line
   }, [canvasHeight, canvasWidth, dataUri])
+
+  const addBoxHandler = () => {
+    canvas.add(
+      new fabric.Rect({
+        left: 100,
+        top: 100,
+        fill: "",
+        width: 100,
+        height: 100,
+        objectCaching: true,
+        stroke: "blue",
+        strokeWidth: 1,
+        hasRotatingPoint: false,
+      })
+    )
+  }
+
+  const removeBoxHandler = () => {
+    canvas.getActiveObjects().forEach((obj) => {
+      canvas.remove(obj)
+    })
+    sendCoordinates()
+  }
 
   /**
    * Send the coordinates of the rectangle
    * back to streamlit.
    */
+
+  const sendCoordinates = () => {
+    const coords = canvas.getObjects().map((rect) => rect.getBoundingRect())
+    Streamlit.setComponentValue({ coords: coords })
+  }
   useEffect(() => {
     if (!canvas) {
       return
     }
     const handleEvent = () => {
       canvas.renderAll()
-      const coords = canvas.getObjects()[0].getBoundingRect()
-      Streamlit.setComponentValue({ coords: coords })
+      sendCoordinates()
     }
 
     canvas.on("object:modified", handleEvent)
@@ -101,7 +131,59 @@ const StreamlitImgLabel = (props: ComponentProps) => {
     }
   })
 
-  return <canvas id="c" width={canvasWidth} height={canvasHeight} />
+  const onSelectMode = (mode: string) => {
+    setMode(mode)
+    if (mode === "dark") document.body.classList.add("dark-mode")
+    else document.body.classList.remove("dark-mode")
+  }
+
+  useEffect(() => {
+    // Add listener to update styles
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) =>
+        onSelectMode(e.matches ? "dark" : "light")
+      )
+
+    // Setup dark/light mode for the first time
+    onSelectMode(
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light"
+    )
+
+    // Remove listener
+    return () => {
+      window
+        .matchMedia("(prefers-color-scheme: dark)")
+        .removeEventListener("change", () => {})
+    }
+  }, [])
+
+  return (
+    <>
+      <canvas
+        id="c"
+        className={mode === "dark" ? styles.dark : ""}
+        width={canvasWidth}
+        height={canvasHeight}
+      />
+      <div className={mode === "dark" ? styles.dark : ""}>
+        <button
+          className={mode === "dark" ? styles.dark : ""}
+          onClick={addBoxHandler}
+        >
+          Add bounding box
+        </button>
+        <button
+          className={mode === "dark" ? styles.dark : ""}
+          onClick={removeBoxHandler}
+        >
+          Remove select
+        </button>
+      </div>
+    </>
+  )
 }
 
 export default withStreamlitConnection(StreamlitImgLabel)

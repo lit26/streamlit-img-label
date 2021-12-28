@@ -1,0 +1,15 @@
+.dark{
+    background-color:rgb(14, 17, 23);
+}
+
+button{
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.25rem;
+    line-height: 1.3;
+    border: 1px solid;
+    margin-right: 5px;
+}
+button.dark{
+    color: white;
+    border-color: rgba(250, 250, 250, 0.2);
+}
