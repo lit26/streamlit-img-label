@@ -93,7 +93,7 @@ const StreamlitImgLabel = (props: ComponentProps) => {
         width: 100,
         height: 100,
         objectCaching: true,
-        stroke: "blue",
+        stroke: props.args.boxColor,
         strokeWidth: 1,
         hasRotatingPoint: false,
       })
@@ -112,10 +112,12 @@ const StreamlitImgLabel = (props: ComponentProps) => {
    * Send the coordinates of the rectangle
    * back to streamlit.
    */
-
   const sendCoordinates = () => {
-    const coords = canvas.getObjects().map((rect) => rect.getBoundingRect())
-    Streamlit.setComponentValue({ coords: coords })
+    const rects = canvas.getObjects().map((rect) => rect.getBoundingRect())
+    const activeRect = canvas
+      .getActiveObjects()
+      ?.map((rect) => rect.getBoundingRect())[0]
+    Streamlit.setComponentValue({ rects, activeRect })
   }
   useEffect(() => {
     if (!canvas) {
