@@ -67,11 +67,11 @@ const StreamlitImgLabel = (props: ComponentProps) => {
             const { top, left, width, height } = rect
             canvasTmp.add(
                 new fabric.Rect({
-                    left: left,
-                    top: top,
+                    left,
+                    top,
                     fill: "",
-                    width: width,
-                    height: height,
+                    width,
+                    height,
                     objectCaching: true,
                     stroke: boxColor,
                     strokeWidth: 1,
@@ -115,6 +115,34 @@ const StreamlitImgLabel = (props: ComponentProps) => {
         const selectIndex = canvas.getObjects().indexOf(selectObject)
         canvas.remove(selectObject)
         sendCoordinates(labels.filter((label, i) => i !== selectIndex))
+    }
+
+    const resetHandler = () => {
+        clearHandler()
+        const { rects, boxColor }: PythonArgs = props.args
+        rects.forEach((rect) => {
+            const { top, left, width, height } = rect
+            canvas.add(
+                new fabric.Rect({
+                    left,
+                    top,
+                    fill: "",
+                    width,
+                    height,
+                    objectCaching: true,
+                    stroke: boxColor,
+                    strokeWidth: 1,
+                    strokeUniform: true,
+                    hasRotatingPoint: false,
+                })
+            )
+        })
+        sendCoordinates(labels)
+    }
+
+    const clearHandler = () => {
+        canvas.getObjects().forEach((rect) => canvas.remove(rect))
+        sendCoordinates([])
     }
 
     /**
@@ -194,6 +222,18 @@ const StreamlitImgLabel = (props: ComponentProps) => {
                     onClick={removeBoxHandler}
                 >
                     Remove select
+                </button>
+                <button
+                    className={mode === "dark" ? styles.dark : ""}
+                    onClick={resetHandler}
+                >
+                    Reset
+                </button>
+                <button
+                    className={mode === "dark" ? styles.dark : ""}
+                    onClick={clearHandler}
+                >
+                    Clear all
                 </button>
             </div>
         </>
