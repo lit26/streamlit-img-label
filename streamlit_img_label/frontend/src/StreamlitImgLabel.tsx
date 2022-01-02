@@ -6,13 +6,14 @@ import {
 } from "streamlit-component-lib"
 import { fabric } from "fabric"
 import styles from "./StreamlitImgLabel.module.css"
+import { AbstractVector } from "apache-arrow/vector"
 
 interface RectProps {
     top: number
     left: number
     width: number
     height: number
-    label?: string
+    label: string
 }
 
 interface PythonArgs {
@@ -26,6 +27,7 @@ interface PythonArgs {
 
 const StreamlitImgLabel = (props: ComponentProps) => {
     const [mode, setMode] = useState("light")
+    const [labels, setLabels] = useState<string[]>([])
     const [canvas, setCanvas] = useState(new fabric.Canvas(""))
     const { canvasWidth, canvasHeight, imageData }: PythonArgs = props.args
     /*
@@ -80,6 +82,7 @@ const StreamlitImgLabel = (props: ComponentProps) => {
                 })
             )
         })
+        setLabels(rects.map((rect) => rect.label))
 
         setCanvas(canvasTmp)
         Streamlit.setFrameHeight()
@@ -101,25 +104,26 @@ const StreamlitImgLabel = (props: ComponentProps) => {
                 hasRotatingPoint: false,
             })
         )
-        sendCoordinates()
+        sendCoordinates([...labels, ""])
     }
 
     const removeBoxHandler = () => {
-        canvas.getActiveObjects().forEach((obj) => {
-            canvas.remove(obj)
-        })
-        sendCoordinates()
+        const selectObject = canvas.getActiveObject()
+        const selectIndex = canvas.getObjects().indexOf(selectObject)
+        canvas.remove(selectObject)
+        const newLabels = labels.filter((label, i) => i !== selectIndex)
+        sendCoordinates(newLabels)
     }
 
     /**
      * Send the coordinates of the rectangle
      * back to streamlit.
      */
-    const sendCoordinates = () => {
-        // console.log(canvas.getObjects())
-        // const selectObject = canvas.getActiveObject()
-        // console.log(canvas.getObjects().indexOf(selectObject))
-        const rects = canvas.getObjects().map((rect) => rect.getBoundingRect())
+    const sendCoordinates = (returnLabels: string[]) => {
+        const rects = canvas.getObjects().map((rect, i) => ({
+            ...rect.getBoundingRect(),
+            label: returnLabels[i],
+        }))
         Streamlit.setComponentValue({ rects })
     }
 
@@ -129,7 +133,7 @@ const StreamlitImgLabel = (props: ComponentProps) => {
         }
         const handleEvent = () => {
             canvas.renderAll()
-            sendCoordinates()
+            sendCoordinates(labels)
         }
 
         canvas.on("object:modified", handleEvent)
