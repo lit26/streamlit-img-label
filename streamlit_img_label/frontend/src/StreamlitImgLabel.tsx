@@ -6,7 +6,6 @@ import {
 } from "streamlit-component-lib"
 import { fabric } from "fabric"
 import styles from "./StreamlitImgLabel.module.css"
-import { AbstractVector } from "apache-arrow/vector"
 
 interface RectProps {
     top: number
@@ -88,14 +87,19 @@ const StreamlitImgLabel = (props: ComponentProps) => {
         // eslint-disable-next-line
     }, [canvasHeight, canvasWidth, dataUri])
 
+    const defaultBox = () => ({
+        left: canvasWidth * 0.15,
+        top: canvasHeight * 0.15,
+        width: canvasWidth * 0.2,
+        height: canvasHeight * 0.2,
+    })
+
     const addBoxHandler = () => {
+        const box = defaultBox()
         canvas.add(
             new fabric.Rect({
-                left: 100,
-                top: 100,
+                ...box,
                 fill: "",
-                width: 100,
-                height: 100,
                 objectCaching: true,
                 stroke: props.args.boxColor,
                 strokeWidth: 1,
@@ -110,8 +114,7 @@ const StreamlitImgLabel = (props: ComponentProps) => {
         const selectObject = canvas.getActiveObject()
         const selectIndex = canvas.getObjects().indexOf(selectObject)
         canvas.remove(selectObject)
-        const newLabels = labels.filter((label, i) => i !== selectIndex)
-        sendCoordinates(newLabels)
+        sendCoordinates(labels.filter((label, i) => i !== selectIndex))
     }
 
     /**
@@ -119,6 +122,7 @@ const StreamlitImgLabel = (props: ComponentProps) => {
      * back to streamlit.
      */
     const sendCoordinates = (returnLabels: string[]) => {
+        setLabels(returnLabels)
         const rects = canvas.getObjects().map((rect, i) => ({
             ...rect.getBoundingRect(),
             label: returnLabels[i],
