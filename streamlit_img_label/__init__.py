@@ -51,7 +51,6 @@ def st_img_label(resized_img: Image, box_color: str = "blue", rects=[], key=None
     # Get arguments to send to frontend
     canvasWidth = resized_img.width
     canvasHeight = resized_img.height
-    lockAspect = False
 
     # Translates image to a list for passing to Javascript
     imageData = np.array(resized_img.convert("RGBA")).flatten().tolist()
@@ -69,7 +68,6 @@ def st_img_label(resized_img: Image, box_color: str = "blue", rects=[], key=None
         rects=rects,
         boxColor=box_color,
         imageData=imageData,
-        lockAspect=not (lockAspect),
         key=key,
     )
     # Return a cropped image using the box from the frontend
@@ -105,5 +103,5 @@ if not _RELEASE:
             with col2:
                 default_index = custom_labels.index(prev_img[1])
 
-                select_label = col2.selectbox("Labels", custom_labels, key=f"label_{i}", index=default_index)
+                select_label = col2.selectbox("Label", custom_labels, key=f"label_{i}", index=default_index)
                 im.set_annotation(i, select_label)

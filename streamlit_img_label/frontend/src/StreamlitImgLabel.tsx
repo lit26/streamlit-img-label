@@ -22,7 +22,6 @@ interface PythonArgs {
     rects: RectProps[]
     boxColor: string
     imageData: Uint8ClampedArray
-    lockAspect: boolean
 }
 
 const StreamlitImgLabel = (props: ComponentProps) => {
@@ -58,11 +57,11 @@ const StreamlitImgLabel = (props: ComponentProps) => {
      * Initialize canvas on mount and add a rectangle
      */
     useEffect(() => {
-        const { rects, boxColor, lockAspect }: PythonArgs = props.args
+        const { rects, boxColor }: PythonArgs = props.args
         const canvasTmp = new fabric.Canvas("c", {
             enableRetinaScaling: false,
             backgroundImage: dataUri,
-            uniScaleTransform: lockAspect,
+            uniScaleTransform: true,
         })
 
         rects.forEach((rect) => {
