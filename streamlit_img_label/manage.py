@@ -2,7 +2,6 @@ from PIL import Image
 from annotation import output_xml, read_xml
 import numpy as np
 
-
 class ImageManager:
     rounding_acc = 1
 
@@ -65,32 +64,10 @@ class ImageManager:
             top : top + height, left : left + width
         ]
         prev_img = prev_img[top : top + height, left : left + width]
-        return Image.fromarray(prev_img)
-
-    def _remove_rounding_error(self, rects):
-        correct_rects = []
-        for i in range(max(len(self._rects), len(rects))):
-            if i < len(self._rects) and i < len(rects):
-                if (
-                    abs(self._rects[i]["left"] - rects[i]["left"]) <= self.rounding_acc
-                    and abs(self._rects[i]["width"] - rects[i]["width"])
-                    <= self.rounding_acc
-                    and abs(self._rects[i]["top"] - rects[i]["top"])
-                    <= self.rounding_acc
-                    and abs(self._rects[i]["height"] - rects[i]["height"])
-                    <= self.rounding_acc
-                ):
-                    correct_rects.append(self._rects[i])
-                else:
-                    correct_rects.append(rects[i])
-            elif i < len(self._rects):
-                correct_rects.append(self._rects[i])
-            else:
-                correct_rects.append(rects[i])
-        return correct_rects
+        return (Image.fromarray(prev_img), rect['label'])
 
     def init_annotation(self, rects):
-        self._current_rects = self._remove_rounding_error(rects)
+        self._current_rects = rects
         return [self._chop_box_img(rect) for rect in self._current_rects]
 
     def set_annotation(self, index, label):

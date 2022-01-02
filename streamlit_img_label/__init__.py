@@ -85,7 +85,7 @@ def st_img_label(resized_img: Image, box_color: str = "blue", rects=[], key=None
 if not _RELEASE:
     import streamlit as st
     st.set_option("deprecation.showfileUploaderEncoding", False)
-    custom_labels = ["Food", "Science", "Research", 'Sports']
+    custom_labels = ["", "Food", "Science", "Research", 'Sports']
 
     img_file_name = "test.png"
     im = ImageManager(img_file_name)
@@ -98,10 +98,12 @@ if not _RELEASE:
         preview_imgs = im.init_annotation(rects)
 
         for i, prev_img in enumerate(preview_imgs):
-            prev_img.thumbnail((200, 200))
+            prev_img[0].thumbnail((200, 200))
             col1, col2 = st.columns(2)
             with col1:
-                col1.image(prev_img)
+                col1.image(prev_img[0])
             with col2:
-                select_label = col2.selectbox("Labels", custom_labels, key=f"label_{i}")
+                default_index = custom_labels.index(prev_img[1])
+
+                select_label = col2.selectbox("Labels", custom_labels, key=f"label_{i}", index=default_index)
                 im.set_annotation(i, select_label)
