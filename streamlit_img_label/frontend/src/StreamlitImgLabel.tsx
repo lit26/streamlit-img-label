@@ -24,10 +24,12 @@ interface PythonArgs {
 }
 
 const StreamlitImgLabel = (props: ComponentProps) => {
-    const [mode, setMode] = useState("light")
+    const [mode, setMode] = useState<string>("light")
     const [labels, setLabels] = useState<string[]>([])
     const [canvas, setCanvas] = useState(new fabric.Canvas(""))
     const { canvasWidth, canvasHeight, imageData }: PythonArgs = props.args
+    const [newBBoxIndex, setNewBBoxIndex] = useState<number>(0)
+
     /*
      * Translate Python image data to a JavaScript Image
      */
@@ -87,8 +89,8 @@ const StreamlitImgLabel = (props: ComponentProps) => {
 
     // Create defualt bounding box
     const defaultBox = () => ({
-        left: canvasWidth * 0.15,
-        top: canvasHeight * 0.15,
+        left: canvasWidth * 0.15 + newBBoxIndex * 3,
+        top: canvasHeight * 0.15 + newBBoxIndex * 3,
         width: canvasWidth * 0.2,
         height: canvasHeight * 0.2,
     })
@@ -96,6 +98,7 @@ const StreamlitImgLabel = (props: ComponentProps) => {
     // Add new bounding box to be image
     const addBoxHandler = () => {
         const box = defaultBox()
+        setNewBBoxIndex(newBBoxIndex + 1)
         canvas.add(
             new fabric.Rect({
                 ...box,
@@ -144,6 +147,7 @@ const StreamlitImgLabel = (props: ComponentProps) => {
 
     // Remove all the bounding boxes
     const clearHandler = () => {
+        setNewBBoxIndex(0)
         canvas.getObjects().forEach((rect) => canvas.remove(rect))
         sendCoordinates([])
     }
