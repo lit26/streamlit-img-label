@@ -87,6 +87,11 @@ if not _RELEASE:
     else:
         idm.set_all_files(st.session_state["files"])
         idm.set_annotation_files(st.session_state["annotation_files"])
+    
+    def rehresh():
+        st.session_state["files"] = idm.get_all_files()
+        st.session_state["annotation_files"] = idm.get_exist_annotation_files()
+        st.session_state["image_index"] = 0
 
     def next_image():
         image_index = st.session_state["image_index"]
@@ -109,6 +114,7 @@ if not _RELEASE:
             st.session_state["image_index"] = idm.get_next_annotation_image(image_index)
         else:
             st.warning("All images are annotated.")
+            next_image()
 
     def go_to_image():
         file_index = st.session_state["files"].index(st.session_state["file"])
@@ -134,6 +140,7 @@ if not _RELEASE:
     with col2:
         st.button(label="Next image", on_click=next_image)
     st.sidebar.button(label="Next need annotate", on_click=next_annotate_file)
+    st.sidebar.button(label="Rehresh", on_click=rehresh)
 
     # Main content: annotate images
     img_file_name = idm.get_image(st.session_state["image_index"])
