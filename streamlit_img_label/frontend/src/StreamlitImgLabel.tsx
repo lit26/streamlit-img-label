@@ -52,9 +52,7 @@ const StreamlitImgLabel = (props: ComponentProps) => {
         dataUri = ""
     }
 
-    /**
-     * Initialize canvas on mount and add a rectangle
-     */
+    // Initialize canvas on mount and add a rectangle
     useEffect(() => {
         const { rects, boxColor }: PythonArgs = props.args
         const canvasTmp = new fabric.Canvas("c", {
@@ -87,6 +85,7 @@ const StreamlitImgLabel = (props: ComponentProps) => {
         // eslint-disable-next-line
     }, [canvasHeight, canvasWidth, dataUri])
 
+    // Create defualt bounding box
     const defaultBox = () => ({
         left: canvasWidth * 0.15,
         top: canvasHeight * 0.15,
@@ -94,6 +93,7 @@ const StreamlitImgLabel = (props: ComponentProps) => {
         height: canvasHeight * 0.2,
     })
 
+    // Add new bounding box to be image
     const addBoxHandler = () => {
         const box = defaultBox()
         canvas.add(
@@ -110,6 +110,7 @@ const StreamlitImgLabel = (props: ComponentProps) => {
         sendCoordinates([...labels, ""])
     }
 
+    // Remove the selected bounding box
     const removeBoxHandler = () => {
         const selectObject = canvas.getActiveObject()
         const selectIndex = canvas.getObjects().indexOf(selectObject)
@@ -117,6 +118,7 @@ const StreamlitImgLabel = (props: ComponentProps) => {
         sendCoordinates(labels.filter((label, i) => i !== selectIndex))
     }
 
+    // Reset the bounding boxes
     const resetHandler = () => {
         clearHandler()
         const { rects, boxColor }: PythonArgs = props.args
@@ -140,15 +142,13 @@ const StreamlitImgLabel = (props: ComponentProps) => {
         sendCoordinates(labels)
     }
 
+    // Remove all the bounding boxes
     const clearHandler = () => {
         canvas.getObjects().forEach((rect) => canvas.remove(rect))
         sendCoordinates([])
     }
 
-    /**
-     * Send the coordinates of the rectangle
-     * back to streamlit.
-     */
+    // Send the coordinates of the rectangle back to streamlit.
     const sendCoordinates = (returnLabels: string[]) => {
         setLabels(returnLabels)
         const rects = canvas.getObjects().map((rect, i) => ({
@@ -158,6 +158,7 @@ const StreamlitImgLabel = (props: ComponentProps) => {
         Streamlit.setComponentValue({ rects })
     }
 
+    // Update the bounding boxes when modified
     useEffect(() => {
         if (!canvas) {
             return
@@ -173,6 +174,7 @@ const StreamlitImgLabel = (props: ComponentProps) => {
         }
     })
 
+    // Adjust the theme according to the system
     const onSelectMode = (mode: string) => {
         setMode(mode)
         if (mode === "dark") document.body.classList.add("dark-mode")
