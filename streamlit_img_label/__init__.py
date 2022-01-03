@@ -92,11 +92,15 @@ if not _RELEASE:
         image_index = st.session_state["image_index"]
         if image_index < len(st.session_state["files"]) - 1:
             st.session_state["image_index"] += 1
+        else:
+            st.warning('This is the last image.')
 
     def previous_image():
         image_index = st.session_state["image_index"]
         if image_index > 0:
             st.session_state["image_index"] -= 1
+        else:
+            st.warning('This is the first image.')
 
     def next_annotate_file():
         image_index = st.session_state["image_index"]
@@ -104,7 +108,7 @@ if not _RELEASE:
         if next_image_index:
             st.session_state["image_index"] = idm.get_next_annotation_image(image_index)
         else:
-            st.warning("All images are already annotated.")
+            st.warning("All images are annotated.")
 
     def go_to_image():
         file_index = st.session_state["files"].index(st.session_state["file"])
