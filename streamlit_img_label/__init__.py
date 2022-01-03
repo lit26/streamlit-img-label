@@ -17,7 +17,7 @@ else:
     _component_func = components.declare_component("st_img_label", path=build_dir)
 
 
-def st_img_label(resized_img: Image, box_color: str = "blue", rects=[], key=None):
+def st_img_label(resized_img, box_color="blue", rects=[], key=None):
     """Create a new instance of "st_img_label".
 
     Parameters
@@ -25,9 +25,9 @@ def st_img_label(resized_img: Image, box_color: str = "blue", rects=[], key=None
     img_file: PIL.Image
         The image to be croppepd
     box_color: string
-        The color of the cropper's bounding box. Defaults to blue, can accept
-        other string colors recognized by fabric.js or hex colors in a format like
-        '#ff003c'
+        The color of the cropper's bounding box. Defaults to blue.
+    rects: list
+        list of bounding boxes that already exists.
     key: str or None
         An optional key that uniquely identifies this component. If this is
         None, and the component's arguments are changed, the component will
@@ -35,8 +35,8 @@ def st_img_label(resized_img: Image, box_color: str = "blue", rects=[], key=None
 
     Returns
     -------
-    PIL.Image
-    The cropped image in PIL.Image format
+    rects: list
+        list of bounding boxes.
     """
     # Get arguments to send to frontend
     canvasWidth = resized_img.width
