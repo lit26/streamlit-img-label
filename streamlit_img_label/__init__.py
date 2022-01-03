@@ -16,6 +16,7 @@ else:
     build_dir = os.path.join(parent_dir, "frontend/build")
     _component_func = components.declare_component("st_img_label", path=build_dir)
 
+
 def st_img_label(resized_img: Image, box_color: str = "blue", rects=[], key=None):
     """Create a new instance of "st_img_label".
 
@@ -65,15 +66,17 @@ def st_img_label(resized_img: Image, box_color: str = "blue", rects=[], key=None
     else:
         return rects
 
+
 # Add some test code to play with the component while it's in development.
 # During development, we can run this just as we would any other Streamlit
 # app: `$ streamlit run my_component/__init__.py`
 if not _RELEASE:
     import streamlit as st
-    st.set_option("deprecation.showfileUploaderEncoding", False)
-    custom_labels = ["", "Food", "Science", "Research", 'Sports']
 
-    img_dir = 'Person'
+    st.set_option("deprecation.showfileUploaderEncoding", False)
+    custom_labels = ["", "dog", "cat"]
+
+    img_dir = "img_dir"
 
     idm = ImageDirManager(img_dir)
 
@@ -84,34 +87,43 @@ if not _RELEASE:
     else:
         idm.set_all_files(st.session_state["files"])
         idm.set_annotation_files(st.session_state["annotation_files"])
-    
+
     def next_image():
         image_index = st.session_state["image_index"]
-        if image_index < len(st.session_state["files"])-1:
+        if image_index < len(st.session_state["files"]) - 1:
             st.session_state["image_index"] += 1
-    
+
     def previous_image():
         image_index = st.session_state["image_index"]
         if image_index > 0:
             st.session_state["image_index"] -= 1
-    
+
     def next_annotate_file():
         image_index = st.session_state["image_index"]
-        st.session_state["image_index"] = idm.get_next_annotation_image(image_index)
+        next_image_index = idm.get_next_annotation_image(image_index)
+        if next_image_index:
+            st.session_state["image_index"] = idm.get_next_annotation_image(image_index)
+        else:
+            st.warning("All images are already annotated.")
 
     def go_to_image():
         file_index = st.session_state["files"].index(st.session_state["file"])
         st.session_state["image_index"] = file_index
 
-
     # Sidebar: show status
-    n_files = len(st.session_state['files'])
-    n_annotate_files = len(st.session_state['annotation_files'])
+    n_files = len(st.session_state["files"])
+    n_annotate_files = len(st.session_state["annotation_files"])
     st.sidebar.write("Total files:", n_files)
     st.sidebar.write("Total annotate files:", n_annotate_files)
     st.sidebar.write("Remaining files:", n_files - n_annotate_files)
 
-    st.sidebar.selectbox("Files", st.session_state["files"], index=st.session_state["image_index"], on_change=go_to_image, key='file')
+    st.sidebar.selectbox(
+        "Files",
+        st.session_state["files"],
+        index=st.session_state["image_index"],
+        on_change=go_to_image,
+        key="file",
+    )
     col1, col2 = st.sidebar.columns(2)
     with col1:
         st.button(label="Previous image", on_click=previous_image)
@@ -130,7 +142,7 @@ if not _RELEASE:
 
     def annotate():
         im.save_annotation()
-        image_annotate_file_name = img_file_name.split(".")[0] + '.xml'
+        image_annotate_file_name = img_file_name.split(".")[0] + ".xml"
         if image_annotate_file_name not in st.session_state["annotation_files"]:
             st.session_state["annotation_files"].append(image_annotate_file_name)
         next_annotate_file()
@@ -149,5 +161,7 @@ if not _RELEASE:
                 if prev_img[1]:
                     default_index = custom_labels.index(prev_img[1])
 
-                select_label = col2.selectbox("Label", custom_labels, key=f"label_{i}", index=default_index)
+                select_label = col2.selectbox(
+                    "Label", custom_labels, key=f"label_{i}", index=default_index
+                )
                 im.set_annotation(i, select_label)

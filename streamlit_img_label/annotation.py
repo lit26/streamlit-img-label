@@ -18,13 +18,15 @@ def read_xml(img_file):
         xmin = int(boxes.find("bndbox/xmin").text)
         ymax = int(boxes.find("bndbox/ymax").text)
         xmax = int(boxes.find("bndbox/xmax").text)
-        rects.append({
+        rects.append(
+            {
                 "left": xmin,
                 "top": ymin,
                 "width": xmax - xmin,
                 "height": ymax - ymin,
-                "label": label
-            })
+                "label": label,
+            }
+        )
     return rects
 
 
