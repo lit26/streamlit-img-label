@@ -4,9 +4,23 @@ import numpy as np
 from PIL import Image
 from annotation import output_xml, read_xml
 
+"""
+.. module:: streamlit_img_label
+   :synopsis: manage.
+.. moduleauthor:: Tianning Li <ltianningli@gmail.com>
+"""
+
 
 class ImageManager:
+    """ImageManager
+    Manage the image object.
+
+    Args:
+        filename(str): the image file.
+    """
+
     def __init__(self, filename):
+        """initiate module"""
         self._filename = filename
         self._img = Image.open(filename)
         self._rects = []
@@ -20,12 +34,30 @@ class ImageManager:
             self._rects = rects_xml
 
     def get_img(self):
+        """get the image object
+
+        Returns:
+            img(PIL.Image): the image object.
+        """
         return self._img
 
     def get_rects(self):
+        """get the rects
+
+        Returns:
+            rects(list): the bounding boxes of the image.
+        """
         return self._rects
 
     def resizing_img(self, max_height=700, max_width=700):
+        """resizing the image by max_height and max_width.
+
+        Args:
+            max_height(int): the max_height of the frame.
+            max_width(int): the max_width of the frame.
+        Returns:
+            resized_img(PIL.Image): the resized image.
+        """
         resized_img = self._img.copy()
         if resized_img.height > max_height:
             ratio = max_height / resized_img.height
@@ -53,6 +85,11 @@ class ImageManager:
         return resized_rect
 
     def get_resized_rects(self):
+        """get resized the rects according to the resized image.
+
+        Returns:
+            resized_rects(list): the resized bounding boxes of the image.
+        """
         return [self._resize_rect(rect) for rect in self._rects]
 
     def _chop_box_img(self, rect):
@@ -79,13 +116,27 @@ class ImageManager:
         return (Image.fromarray(prev_img), label)
 
     def init_annotation(self, rects):
+        """init annotation for current rects.
+
+        Args:
+            rects(list): the bounding boxes of the image.
+        Returns:
+            prev_img(list): list of preview images with default label.
+        """
         self._current_rects = rects
         return [self._chop_box_img(rect) for rect in self._current_rects]
 
     def set_annotation(self, index, label):
+        """set the label of the image.
+
+        Args:
+            index(int): the index of the list of bounding boxes of the image.
+            label(str): the label of the bounding box
+        """
         self._current_rects[index]["label"] = label
 
     def save_annotation(self):
+        """output the xml annotation file."""
         output_xml(self._filename, self._img, self._current_rects)
 
 

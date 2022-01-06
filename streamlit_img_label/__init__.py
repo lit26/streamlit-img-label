@@ -1,6 +1,5 @@
 import os
 import streamlit.components.v1 as components
-from PIL import Image
 import numpy as np
 from manage import ImageManager, ImageDirManager
 
@@ -87,7 +86,7 @@ if not _RELEASE:
     else:
         idm.set_all_files(st.session_state["files"])
         idm.set_annotation_files(st.session_state["annotation_files"])
-    
+
     def rehresh():
         st.session_state["files"] = idm.get_all_files()
         st.session_state["annotation_files"] = idm.get_exist_annotation_files()
@@ -98,14 +97,14 @@ if not _RELEASE:
         if image_index < len(st.session_state["files"]) - 1:
             st.session_state["image_index"] += 1
         else:
-            st.warning('This is the last image.')
+            st.warning("This is the last image.")
 
     def previous_image():
         image_index = st.session_state["image_index"]
         if image_index > 0:
             st.session_state["image_index"] -= 1
         else:
-            st.warning('This is the first image.')
+            st.warning("This is the first image.")
 
     def next_annotate_file():
         image_index = st.session_state["image_index"]

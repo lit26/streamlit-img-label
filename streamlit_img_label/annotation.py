@@ -2,8 +2,22 @@ import os
 from pascal_voc_writer import Writer
 from xml.etree import ElementTree as ET
 
+"""
+.. module:: streamlit_img_label
+   :synopsis: annotation.
+.. moduleauthor:: Tianning Li <ltianningli@gmail.com>
+"""
+
 
 def read_xml(img_file):
+    """read_xml
+    Read the xml annotation file and extract the bounding boxes if exists.
+
+    Args:
+        img_file(str): the image file.
+    Returns:
+        rects(list): the bounding boxes of the image.
+    """
     file_name = img_file.split(".")[0]
     if not os.path.isfile(f"{file_name}.xml"):
         return []
@@ -31,6 +45,14 @@ def read_xml(img_file):
 
 
 def output_xml(img_file, img, rects):
+    """output_xml
+    Output the xml image annotation file
+
+    Args:
+        img_file(str): the image file.
+        img(PIL.Image): the image object.
+        rects(list): the bounding boxes of the image.
+    """
     file_name = img_file.split(".")[0]
     writer = Writer(img_file, img.width, img.height)
     for box in rects:
