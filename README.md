@@ -1,38 +1,19 @@
 # Streamlit Image Labelling - Blog post
 
-Source code for the [Streamlit Components tutorial](https://streamlit-components-tutorial.netlify.app).
+streamlit-img-label is a graphical image annotation tool using streamlit. Annotations are saved as XML files in PASCAL VOC format.
 
-![](./demo.gif)
+## Installation
 
-Checkout the branch you're interested in
+In your python virtual environment, run:
 
-```
-git checkout partx
-```
-
-Install streamlit and custom library:
-
-```
-pip install streamlit
-pip install -e .
+```sh
+pip install streamlit-img-label
 ```
 
-Install npm dependencies :
-
-```
-cd streamlit_img_label/frontend
-npm install
+## Example
+```sh
+python app.py
 ```
 
-Run custom components web server :
-
-```
-cd streamlit_img_label/frontend
-npm run start
-```
-
-Run Streamlit code :
-
-```
-streamlit run app.py
-```
+## Demo
+![Demo](asset/demo.png)
