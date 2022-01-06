@@ -17,3 +17,7 @@ python app.py
 
 ## Demo
 ![Demo](asset/st_img_label.gif)
+
+## Reference
+
+- [streamlit-cropper](https://github.com/turner-anderson/streamlit-cropper)
