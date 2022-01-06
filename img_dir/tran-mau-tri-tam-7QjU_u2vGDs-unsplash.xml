@@ -1,0 +1,37 @@
+<annotation>
+    <folder>img_dir</folder>
+    <filename>tran-mau-tri-tam-7QjU_u2vGDs-unsplash.jpg</filename>
+    <path>/Users/tianningli/Documents/projects/streamlit-img-label/img_dir/tran-mau-tri-tam-7QjU_u2vGDs-unsplash.jpg</path>
+    <source>
+        <database>Unknown</database>
+    </source>
+    <size>
+        <width>4032</width>
+        <height>3024</height>
+        <depth>3</depth>
+    </size>
+    <segmented>0</segmented>
+    <object>
+        <name></name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>1209</xmin>
+            <ymin>937</ymin>
+            <xmax>2061</xmax>
+            <ymax>1790</ymax>
+        </bndbox>
+    </object>    <object>
+        <name></name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>1848</xmin>
+            <ymin>107</ymin>
+            <xmax>2907</xmax>
+            <ymax>1318</ymax>
+        </bndbox>
+    </object>
+</annotation>

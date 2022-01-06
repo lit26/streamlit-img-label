@@ -1,0 +1,37 @@
+<annotation>
+    <folder>img_dir</folder>
+    <filename>andrew-s-ouo1hbizWwo-unsplash.jpg</filename>
+    <path>/Users/tianningli/Documents/projects/streamlit-img-label/img_dir/andrew-s-ouo1hbizWwo-unsplash.jpg</path>
+    <source>
+        <database>Unknown</database>
+    </source>
+    <size>
+        <width>6240</width>
+        <height>4160</height>
+        <depth>3</depth>
+    </size>
+    <segmented>0</segmented>
+    <object>
+        <name>cat</name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>1114</xmin>
+            <ymin>445</ymin>
+            <xmax>2745</xmax>
+            <ymax>2088</ymax>
+        </bndbox>
+    </object>    <object>
+        <name></name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>3717</xmin>
+            <ymin>1570</ymin>
+            <xmax>5883</xmax>
+            <ymax>3597</ymax>
+        </bndbox>
+    </object>
+</annotation>

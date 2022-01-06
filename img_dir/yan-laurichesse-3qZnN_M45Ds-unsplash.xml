@@ -1,0 +1,37 @@
+<annotation>
+    <folder>img_dir</folder>
+    <filename>yan-laurichesse-3qZnN_M45Ds-unsplash.jpg</filename>
+    <path>/Users/tianningli/Documents/projects/streamlit-img-label/img_dir/yan-laurichesse-3qZnN_M45Ds-unsplash.jpg</path>
+    <source>
+        <database>Unknown</database>
+    </source>
+    <size>
+        <width>4608</width>
+        <height>3464</height>
+        <depth>3</depth>
+    </size>
+    <segmented>0</segmented>
+    <object>
+        <name>dog</name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>1461</xmin>
+            <ymin>789</ymin>
+            <xmax>3021</xmax>
+            <ymax>1843</ymax>
+        </bndbox>
+    </object>    <object>
+        <name>cat</name>
+        <pose>Unspecified</pose>
+        <truncated>0</truncated>
+        <difficult>0</difficult>
+        <bndbox>
+            <xmin>2777</xmin>
+            <ymin>1461</ymin>
+            <xmax>3889</xmax>
+            <ymax>2304</ymax>
+        </bndbox>
+    </object>
+</annotation>
