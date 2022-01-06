@@ -2,7 +2,7 @@ import os
 import re
 import numpy as np
 from PIL import Image
-from annotation import output_xml, read_xml
+from .annotation import output_xml, read_xml
 
 """
 .. module:: streamlit_img_label

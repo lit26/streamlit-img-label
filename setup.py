@@ -1,14 +1,14 @@
 import setuptools
 
 setuptools.setup(
-    name="streamlit-img-label",
-    version="0.1.0",
-    author="",
-    author_email="",
-    description="",
-    long_description="",
+    name="streamlit_img_label",
+    version="0.1.1",
+    author="Tianning Li",
+    author_email="ltianningli@gmail.com",
+    description="Streamlit Image Annotation",
+    long_description="It is a image annotation tool. You can use to do preprocessing of computer vision tasks.",
     long_description_content_type="text/plain",
-    url="",
+    url="https://github.com/lit26/streamlit-img-label",
     packages=setuptools.find_packages(),
     include_package_data=True,
     classifiers=[],
