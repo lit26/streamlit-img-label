@@ -16,4 +16,4 @@ python app.py
 ```
 
 ## Demo
-![Demo](asset/demo.png)
+![Demo](asset/st_img_label.gif)
