@@ -21,3 +21,7 @@ python app.py
 ## Reference
 
 - [streamlit-cropper](https://github.com/turner-anderson/streamlit-cropper)
+
+## Donation
+
+If you think this project is cool, please consider [buying me a coffee](https://www.paypal.com/paypalme/TIANNINGL/)
