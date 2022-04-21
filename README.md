@@ -12,7 +12,7 @@ pip install streamlit-img-label
 
 ## Example
 ```sh
-python app.py
+streamlit run app.py
 ```
 
 ## Demo

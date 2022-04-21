@@ -15,7 +15,7 @@ def run(img_dir, labels):
         idm.set_all_files(st.session_state["files"])
         idm.set_annotation_files(st.session_state["annotation_files"])
     
-    def rehresh():
+    def refresh():
         st.session_state["files"] = idm.get_all_files()
         st.session_state["annotation_files"] = idm.get_exist_annotation_files()
         st.session_state["image_index"] = 0
@@ -67,7 +67,7 @@ def run(img_dir, labels):
     with col2:
         st.button(label="Next image", on_click=next_image)
     st.sidebar.button(label="Next need annotate", on_click=next_annotate_file)
-    st.sidebar.button(label="Rehresh", on_click=rehresh)
+    st.sidebar.button(label="Refresh", on_click=refresh)
 
     # Main content: annotate images
     img_file_name = idm.get_image(st.session_state["image_index"])
