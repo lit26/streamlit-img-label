@@ -4,7 +4,6 @@ from streamlit_img_label import st_img_label
 from streamlit_img_label.manage import ImageManager, ImageDirManager
 
 def run(img_dir, labels):
-    st.set_option("deprecation.showfileUploaderEncoding", False)
     idm = ImageDirManager(img_dir)
 
     if "files" not in st.session_state:
